@@ -1,0 +1,32 @@
+projection;
+strict ( 2 );
+use draft;
+use side effects;
+
+define behavior for ZC_TMD_Request alias Request
+use etag
+{
+  use create;
+  use update;
+  use delete;
+
+  use action generateTargets;   // "Replicate"
+  use action execute;           // "Create Objects"
+
+  use action Edit;
+  use action Activate;
+  use action Discard;
+  use action Resume;
+  use action Prepare;
+
+  use association _Target { with draft; }   // rows come only from Replicate, no manual "Create"
+}
+
+define behavior for ZC_TMD_Target alias Target
+use etag
+{
+  use update;
+  use delete;
+
+  use association _Request { with draft; }
+}

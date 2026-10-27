@@ -1,0 +1,130 @@
+managed implementation in class zbp_r_tmd_request unique;
+strict ( 2 );
+with draft;
+
+define behavior for ZR_TMD_Request alias Request
+persistent table ztmd_req
+draft table ztmd_req_d
+etag master LocalLastChangedAt
+lock master total etag LastChangedAt
+authorization master ( global )
+with additional save
+{
+  create;
+  update ( features : instance );
+  delete ( features : instance );
+  association _Target { create; with draft; }
+
+  field ( numbering : managed, readonly ) RequestUUID;
+  field ( readonly ) RequestID, Status, StatusText, StatusCriticality,
+                     IsStreetMode, IsApartmentMode,
+                     CreatedBy, CreatedAt, LastChangedBy, LastChangedAt, LocalLastChangedAt;
+  field ( mandatory ) ScenarioID, ReplicateMode, NumberOfObjects, HouseNumber,
+                      StreetName, CityName, PostalCode, Country, MaintenancePlant;
+
+  determination setDefaults       on modify { create; }
+  determination setMode           on modify { field ReplicateMode; }
+  determination fillFromReference on modify { field RefConnectionObject, RefPremise; }
+  determination setRequestID      on save   { create; }
+
+  validation validateHeader on save { create; update; }
+
+  action ( features : instance ) generateTargets result [1] $self;   // "Replicate" button
+  action ( features : instance ) execute         result [1] $self;   // "Create Objects" button
+
+  draft action ( features : instance ) Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare { validation validateHeader; }
+
+  side effects
+  {
+    field ReplicateMode affects field IsStreetMode, field IsApartmentMode;
+    field RefPremise affects field RefConnectionObject, field HouseNumber, field StreetName,
+                             field CityName, field PostalCode, field Region, field Country,
+                             field ReuseConnectionObject;
+    field RefConnectionObject affects field HouseNumber, field StreetName, field CityName,
+                                      field PostalCode, field Region, field Country,
+                                      field ReuseConnectionObject;
+    action generateTargets affects entity _Target, field Status, field StatusText, field StatusCriticality;
+  }
+
+  mapping for ztmd_req corresponding
+  {
+    RequestUUID           = request_uuid;
+    RequestID             = request_id;
+    ScenarioID            = scenario_id;
+    ReplicateMode         = replicate_mode;
+    IsStreetMode          = is_street_mode;
+    IsApartmentMode       = is_apartment_mode;
+    RefConnectionObject   = ref_connection_object;
+    RefPremise            = ref_premise;
+    ReuseConnectionObject = reuse_connection_obj;
+    NumberOfObjects       = number_of_objects;
+    HouseNumber           = house_number;
+    IncrementValue        = increment_value;
+    IncrementBy           = increment_by;
+    StreetDirection       = street_direction;
+    StreetName            = street_name;
+    StreetSuffix          = street_suffix;
+    UnitType              = unit_type;
+    LetterNumberFormat    = letter_number_format;
+    StartLetter           = start_letter;
+    StartNumber           = start_number;
+    StreetSupplement      = street_supplement;
+    CityName              = city_name;
+    PostalCode            = postal_code;
+    Region                = region;
+    Country               = country;
+    PremiseType           = premise_type;
+    MaintenancePlant      = maintenance_plant;
+    KeyDate               = key_date;
+    Status                = status;
+    StatusText            = status_text;
+    StatusCriticality     = status_criticality;
+    CreatedBy             = created_by;
+    CreatedAt             = created_at;
+    LastChangedBy         = last_changed_by;
+    LastChangedAt         = last_changed_at;
+    LocalLastChangedAt    = local_last_changed_at;
+  }
+}
+
+define behavior for ZR_TMD_Target alias Target
+persistent table ztmd_tgt
+draft table ztmd_tgt_d
+etag master LocalLastChangedAt
+lock dependent by _Request
+authorization dependent by _Request
+{
+  update;
+  delete;
+  association _Request { with draft; }
+
+  field ( numbering : managed, readonly ) TargetUUID;
+  field ( readonly ) RequestUUID, GroupNo, SeqNo, ConnectionObject, Premise,
+                     DevLocElectric, DevLocGas, DevLocLight, RowStatus, RowMessage, RowCriticality;
+
+  mapping for ztmd_tgt corresponding
+  {
+    TargetUUID         = target_uuid;
+    RequestUUID        = request_uuid;
+    GroupNo            = group_no;
+    SeqNo              = seq_no;
+    HouseNumber        = house_number;
+    Street             = street;
+    Supplement         = supplement;
+    StreetSupplement   = street_supplement;
+    PremiseType        = premise_type;
+    ConnectionObject   = connection_object;
+    Premise            = premise;
+    DevLocElectric     = devloc_electric;
+    DevLocGas          = devloc_gas;
+    DevLocLight        = devloc_light;
+    RowStatus          = row_status;
+    RowMessage         = row_message;
+    RowCriticality     = row_criticality;
+    LocalLastChangedAt = local_last_changed_at;
+  }
+}

@@ -1,0 +1,148 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: { typeName:       'Premise Replication',
+                typeNamePlural: 'Premise Replications',
+                title:          { type: #STANDARD, value: 'RequestID' },
+                description:    { type: #STANDARD, value: 'StatusText' } },
+  presentationVariant: [{ sortOrder: [{ by: 'CreatedAt', direction: #DESC }],
+                          visualizations: [{ type: #AS_LINEITEM }] }]
+}
+annotate entity ZC_TMD_Request with
+{
+  // Object Page: one section with two columns (= the mock-up), then extra data, then the generated rows
+  @UI.facet: [
+    { id: 'Input',   purpose: #STANDARD, type: #COLLECTION, position: 10,
+      label: 'Custom Premise Replicator Tool' },
+    { id: 'Left',    parentId: 'Input', type: #FIELDGROUP_REFERENCE, targetQualifier: 'Left',  position: 10 },
+    { id: 'Right',   parentId: 'Input', type: #FIELDGROUP_REFERENCE, targetQualifier: 'Right', position: 20 },
+    { id: 'Extra',   purpose: #STANDARD, type: #FIELDGROUP_REFERENCE, targetQualifier: 'Extra', position: 20,
+      label: 'Premise and Device Location data' },
+    { id: 'Targets', purpose: #STANDARD, type: #LINEITEM_REFERENCE, targetElement: '_Target', position: 30,
+      label: 'Generated premises' }
+  ]
+
+  @UI.hidden: true
+  RequestUUID;
+
+  // Buttons: "Replicate" in the footer (determining), "Create Objects" in the header
+  @UI.identification: [{ type: #FOR_ACTION, dataAction: 'generateTargets', label: 'Replicate',
+                         determining: true, position: 10 },
+                       { type: #FOR_ACTION, dataAction: 'execute', label: 'Create Objects', position: 20 }]
+  @UI.lineItem:       [{ position: 10, importance: #HIGH },
+                       { type: #FOR_ACTION, dataAction: 'execute', label: 'Create Objects', position: 10 }]
+  @UI.selectionField: [{ position: 10 }]
+  RequestID;
+
+  // ---------------- LEFT column ----------------
+  @UI.fieldGroup:     [{ qualifier: 'Left', position: 5 }]
+  @UI.lineItem:       [{ position: 20, importance: #HIGH }]
+  @UI.selectionField: [{ position: 20 }]
+  ScenarioID;
+
+  @UI.fieldGroup: [{ qualifier: 'Left', position: 10 }]
+  RefConnectionObject;
+
+  @UI.fieldGroup: [{ qualifier: 'Left', position: 20 }]
+  RefPremise;
+
+  // same field, two labels - only one visible at a time
+  @UI.fieldGroup: [{ qualifier: 'Left', position: 30, label: 'No of Connection Objects to be created',
+                     hidden: #(IsApartmentMode) },
+                   { qualifier: 'Left', position: 31, label: 'Number of Premises to be created',
+                     hidden: #(IsStreetMode) }]
+  NumberOfObjects;
+
+  @UI.fieldGroup: [{ qualifier: 'Left', position: 40, label: 'Start House Number', hidden: #(IsApartmentMode) },
+                   { qualifier: 'Left', position: 41, label: 'House Number',       hidden: #(IsStreetMode) }]
+  HouseNumber;
+
+  @UI.fieldGroup: [{ qualifier: 'Left', position: 50 }]
+  StreetDirection;
+
+  @UI.fieldGroup: [{ qualifier: 'Left', position: 60 }]
+  @UI.lineItem:   [{ position: 40 }]
+  StreetName;
+
+  @UI.fieldGroup: [{ qualifier: 'Left', position: 70 }]
+  StreetSuffix;
+
+  @UI.fieldGroup: [{ qualifier: 'Left', position: 80 }]
+  UnitType;
+
+  @UI.fieldGroup: [{ qualifier: 'Left', position: 90 }]
+  @UI.lineItem:   [{ position: 30 }]
+  ReplicateMode;
+
+  // ---------------- RIGHT column ----------------
+  @UI.fieldGroup: [{ qualifier: 'Right', position: 10 }]
+  @UI.lineItem:   [{ position: 50 }]
+  CityName;
+
+  @UI.fieldGroup: [{ qualifier: 'Right', position: 20 }]
+  PostalCode;
+
+  @UI.fieldGroup: [{ qualifier: 'Right', position: 25 }]
+  Region;
+
+  @UI.fieldGroup: [{ qualifier: 'Right', position: 30 }]
+  Country;
+
+  @UI.fieldGroup: [{ qualifier: 'Right', position: 40, hidden: #(IsStreetMode) }]
+  IncrementBy;
+
+  @UI.fieldGroup: [{ qualifier: 'Right', position: 50 }]
+  IncrementValue;
+
+  @UI.fieldGroup: [{ qualifier: 'Right', position: 60, hidden: #(IsStreetMode) }]
+  StartLetter;
+
+  @UI.fieldGroup: [{ qualifier: 'Right', position: 70, hidden: #(IsStreetMode) }]
+  StartNumber;
+
+  @UI.fieldGroup: [{ qualifier: 'Right', position: 80, hidden: #(IsStreetMode) }]
+  LetterNumberFormat;
+
+  // ---------------- second section ----------------
+  @UI.fieldGroup: [{ qualifier: 'Extra', position: 10 }]
+  MaintenancePlant;
+
+  @UI.fieldGroup: [{ qualifier: 'Extra', position: 20 }]
+  PremiseType;
+
+  @UI.fieldGroup: [{ qualifier: 'Extra', position: 30 }]
+  StreetSupplement;
+
+  @UI.fieldGroup: [{ qualifier: 'Extra', position: 40 }]
+  ReuseConnectionObject;
+
+  @UI.fieldGroup: [{ qualifier: 'Extra', position: 50 }]
+  KeyDate;
+
+  // ---------------- status / admin ----------------
+  @UI.lineItem:   [{ position: 60, criticality: 'StatusCriticality', importance: #HIGH }]
+  @UI.fieldGroup: [{ qualifier: 'Extra', position: 60, criticality: 'StatusCriticality' }]
+  StatusText;
+
+  @UI.selectionField: [{ position: 30 }]
+  @UI.hidden: true
+  Status;
+
+  @UI.lineItem: [{ position: 70 }]
+  CreatedBy;
+
+  @UI.lineItem: [{ position: 80 }]
+  CreatedAt;
+
+  @UI.hidden: true
+  IsStreetMode;
+  @UI.hidden: true
+  IsApartmentMode;
+  @UI.hidden: true
+  StatusCriticality;
+  @UI.hidden: true
+  LastChangedBy;
+  @UI.hidden: true
+  LastChangedAt;
+  @UI.hidden: true
+  LocalLastChangedAt;
+}
