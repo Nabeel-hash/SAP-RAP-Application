@@ -1,0 +1,17 @@
+@EndUserText.label: 'Custom Premise Replicator Tool (demo)'
+define service ZUI_TMD_REQUEST {
+  expose ZC_TMD_Request     as Request;
+  expose ZC_TMD_Target      as Target;
+  expose ZI_TMD_ScenarioVH  as ScenarioVH;
+  expose ZI_TMD_ReplModeVH  as ReplicateModeVH;
+  expose ZI_TMD_StreetDirVH as StreetDirectionVH;
+  expose ZI_TMD_StreetSfxVH as StreetSuffixVH;
+  expose ZI_TMD_UnitTypeVH  as UnitTypeVH;
+  expose ZI_TMD_LnFormatVH  as LetterNumberFormatVH;
+  expose ZI_TMD_IncrByVH    as IncrementByVH;
+  expose ZI_TMD_ConnObjVH   as ConnObjVH;
+  expose ZI_TMD_PremiseVH   as PremiseVH;
+  expose I_CountryVH        as CountryVH;
+  expose I_RegionVH         as RegionVH;
+  expose I_Plant            as PlantVH;
+}

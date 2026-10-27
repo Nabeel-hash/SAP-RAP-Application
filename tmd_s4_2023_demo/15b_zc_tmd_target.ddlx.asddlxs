@@ -1,0 +1,57 @@
+@Metadata.layer: #CUSTOMER
+@UI.headerInfo: { typeName: 'Generated premise', typeNamePlural: 'Generated premises',
+                  title: { type: #STANDARD, value: 'Supplement' } }
+@UI.presentationVariant: [{ sortOrder: [{ by: 'SeqNo', direction: #ASC }],
+                            visualizations: [{ type: #AS_LINEITEM }] }]
+annotate entity ZC_TMD_Target with
+{
+  @UI.facet: [{ id: 'Row', purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, label: 'Generated premise', position: 10 }]
+
+  @UI.hidden: true
+  TargetUUID;
+  @UI.hidden: true
+  RequestUUID;
+
+  @UI.lineItem: [{ position: 10 }]
+  SeqNo;
+  @UI.lineItem: [{ position: 20 }]
+  @UI.identification: [{ position: 20 }]
+  HouseNumber;
+  @UI.lineItem: [{ position: 30 }]
+  @UI.identification: [{ position: 30 }]
+  Street;
+  @UI.lineItem: [{ position: 40 }]
+  @UI.identification: [{ position: 40 }]
+  Supplement;
+  @UI.lineItem: [{ position: 50, importance: #HIGH }]
+  @UI.identification: [{ position: 50 }]
+  ConnectionObject;
+  @UI.lineItem: [{ position: 60, importance: #HIGH }]
+  @UI.identification: [{ position: 60 }]
+  Premise;
+  @UI.lineItem: [{ position: 70 }]
+  @UI.identification: [{ position: 70 }]
+  DevLocElectric;
+  @UI.lineItem: [{ position: 80 }]
+  @UI.identification: [{ position: 80 }]
+  DevLocGas;
+  @UI.lineItem: [{ position: 90 }]
+  @UI.identification: [{ position: 90 }]
+  DevLocLight;
+  @UI.lineItem: [{ position: 100, criticality: 'RowCriticality', importance: #HIGH }]
+  @UI.identification: [{ position: 100, criticality: 'RowCriticality' }]
+  RowMessage;
+
+  @UI.hidden: true
+  GroupNo;
+  @UI.hidden: true
+  RowStatus;
+  @UI.hidden: true
+  RowCriticality;
+  @UI.hidden: true
+  StreetSupplement;
+  @UI.hidden: true
+  PremiseType;
+  @UI.hidden: true
+  LocalLastChangedAt;
+}
